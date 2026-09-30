@@ -1,0 +1,6 @@
+/* Component-specific rules for PDF Booklet. Shared controls remain in /styles.css. */
+.pdf-booklet-page .pdf-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+
+@media (max-width: 680px) {
+  .pdf-booklet-page .pdf-actions { flex-direction: column; }
+}

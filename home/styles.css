@@ -1,0 +1,26 @@
+.home-page { width: 100%; max-width: none; min-height: calc(100vh - clamp(64px, 12vw, 176px)); margin: 0; display: grid; grid-template-columns: minmax(300px, .9fr) minmax(360px, 1.1fr); align-items: center; position: relative; }
+.home-copy { position: relative; z-index: 1; padding: 40px 0; }
+.home-copy h1 { max-width: 620px; font-size: clamp(48px, 6vw, 78px); line-height: .94; }
+.home-copy h1 em { color: #b9afff; font-style: normal; }
+.home-copy .lede { max-width: 455px; margin-bottom: 28px; }
+.home-cta { padding: 14px 18px; border: 0; border-radius: 10px; background: linear-gradient(135deg, #b4a8ff, #7b67e9); box-shadow: 0 12px 28px rgba(86,68,202,.32); color: #151528; font-weight: 700; transition: transform .2s ease, filter .2s ease; }
+.home-cta:hover { filter: brightness(1.08); transform: translateY(-2px); }
+.home-cta span { margin-left: 17px; font-size: 18px; }
+.home-visual { position: relative; min-height: 500px; display: grid; place-items: center; }
+.home-visual img { position: relative; z-index: 1; width: min(100%, 590px); max-height: 600px; object-fit: contain; filter: drop-shadow(0 24px 35px rgba(0,0,0,.28)); animation: float-in 700ms ease-out both; }
+.hero-glow { position: absolute; width: 72%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(137,114,255,.31), rgba(109,79,221,.1) 42%, transparent 70%); filter: blur(5px); }
+.home-features { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: -35px; padding-bottom: 20px; position: relative; z-index: 2; }
+.home-features > div { min-height: 118px; padding: 17px 18px; border: 1px solid rgba(184,191,229,.1); border-radius: 12px; background: rgba(27,32,54,.68); backdrop-filter: blur(12px); }
+.home-features span { display: block; margin-bottom: 14px; color: #9187eb; font: 10px "DM Mono"; }
+.home-features strong { color: #edf0fa; font-size: 14px; }
+.home-features p { margin: 6px 0 0; color: #8993ad; font-size: 12px; line-height: 1.4; }
+
+@media (max-width: 860px) {
+  .home-page { display: flex; flex-direction: column; min-height: 0; align-items: stretch; }
+  .home-copy { padding-top: 0; text-align: center; }
+  .home-copy .lede { margin-left: auto; margin-right: auto; }
+  .home-visual { min-height: 340px; order: 2; }
+  .home-visual img { max-height: 440px; }
+  .home-features { order: 3; grid-template-columns: 1fr; margin-top: 0; }
+  .home-features > div { min-height: auto; }
+}

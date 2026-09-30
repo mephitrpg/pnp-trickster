@@ -1,0 +1,20 @@
+export default {
+  bookletEyebrow: "Print prep",
+  bookletLede: "Turn a regular PDF into a print-ready booklet. Pages are paired so they fold into the right sequence.",
+  dropPdf: "Drop your PDF here",
+  orChoose: "or choose a file from your computer",
+  choosePdf: "Choose PDF",
+  pdfNote: "PDF · up to 100 MB",
+  paper: "Paper",
+  layout: "Layout",
+  binding: "Binding",
+  twoPages: "2 pages per side",
+  shortEdge: "Short edge",
+  uploadPreview: "Upload a PDF to preview its booklet layout.",
+  split: "Split every page in half",
+  join: "Join pages in pairs",
+  chooseTransform: "Choose how to transform your PDF.",
+  preparing: "Preparing your PDF…",
+  downloaded: "Your transformed PDF has been downloaded.",
+  pdfError: "That PDF could not be processed. Try another file."
+};

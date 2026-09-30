@@ -1,0 +1,20 @@
+export default {
+  bookletEyebrow: "Preparazione stampa",
+  bookletLede: "Trasforma un PDF normale in un libretto pronto per la stampa. Le pagine vengono affiancate per essere piegate nella sequenza corretta.",
+  dropPdf: "Trascina qui il tuo PDF",
+  orChoose: "o scegli un file dal computer",
+  choosePdf: "Scegli PDF",
+  pdfNote: "PDF · fino a 100 MB",
+  paper: "Carta",
+  layout: "Layout",
+  binding: "Rilegatura",
+  twoPages: "2 pagine per lato",
+  shortEdge: "Lato corto",
+  uploadPreview: "Carica un PDF per visualizzare l’anteprima del libretto.",
+  split: "Dividi ogni pagina a metà",
+  join: "Unisci le pagine a coppie",
+  chooseTransform: "Scegli come trasformare il PDF.",
+  preparing: "Preparazione del PDF…",
+  downloaded: "Il PDF trasformato è stato scaricato.",
+  pdfError: "Non è stato possibile elaborare questo PDF. Prova con un altro file."
+};

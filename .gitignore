@@ -1,0 +1,18 @@
+# Dependencies and build output
+node_modules/
+dist/
+
+# Test and browser automation artifacts
+artifacts/
+.playwright-mcp/
+.chrome-codex-profile/
+
+# Local editor and operating-system files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
