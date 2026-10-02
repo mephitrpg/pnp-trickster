@@ -3,6 +3,7 @@ const { readFileSync } = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
 const vm = require("node:vm");
+const { compileTypeScript, importTypeScript } = require("./load-typescript.cjs");
 
 // Keep pixels in memory so tests exercise the worker's real detection and
 // perspective transform without relying on browser PNG encoding.
@@ -23,7 +24,7 @@ class OffscreenCanvas {
   }
   async convertToBlob() { return this.pixels; }
 }
-const workerSource = readFileSync(path.join(__dirname, "../tools/sprites-printer/detection-worker.js"), "utf8");
+const workerSource = compileTypeScript(readFileSync(path.join(__dirname, "../tools/CardPrinter/workers/detection-worker.ts"), "utf8"));
 function makeWorker() {
   let handler;
   const messages = [];
@@ -69,8 +70,7 @@ test("removing every area produces no crops instead of rerunning detection", asy
 });
 
 test("corner edits accept perspective shapes and reject crossed or collapsed borders", async () => {
-  const code = readFileSync(path.join(__dirname, "../tools/sprites-printer/detection-editor.js"));
-  const { validCorners } = await import(`data:text/javascript;base64,${code.toString("base64")}`);
+  const { validCorners } = await importTypeScript("../tools/CardPrinter/utils/geometry.ts");
   assert.equal(validCorners(rectangle(5, 5, 20, 30).corners), true);
   assert.equal(validCorners([{ x: 8, y: 7 }, { x: 25, y: 5 }, { x: 23, y: 35 }, { x: 5, y: 30 }]), true);
   assert.equal(validCorners([{ x: 30, y: 30 }, { x: 25, y: 5 }, { x: 25, y: 35 }, { x: 5, y: 35 }]), false);

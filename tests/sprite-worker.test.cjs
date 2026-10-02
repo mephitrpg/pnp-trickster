@@ -3,6 +3,7 @@ const { readFileSync } = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
 const vm = require("node:vm");
+const { compileTypeScript } = require("./load-typescript.cjs");
 let PDFDocument, PDFDict, PDFName, rgb;
 
 test.before(async () => {
@@ -10,10 +11,10 @@ test.before(async () => {
   ({ PDFDocument, PDFDict, PDFName, rgb } = await import(`data:text/javascript;base64,${library.toString("base64")}`));
 });
 
-const workerPath = path.join(__dirname, "../tools/sprites-printer/sprite-worker.js");
+const workerPath = path.join(__dirname, "../tools/CardPrinter/workers/sprite-worker.ts");
 // Run the actual worker handler with the vendored pdf-lib library. Only the
 // browser image APIs are replaced; PDF encoding and parsing remain real.
-const workerSource = readFileSync(workerPath, "utf8").replace(/^import .*\r?\n/, "\n");
+const workerSource = compileTypeScript(readFileSync(workerPath, "utf8")).replace(/^import .*\r?\n/, "\n");
 const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aoyoAAAAASUVORK5CYII=", "base64");
 
 function makeWorker() {
