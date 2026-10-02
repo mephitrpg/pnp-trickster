@@ -24,7 +24,7 @@ class OffscreenCanvas {
   }
   async convertToBlob() { return this.pixels; }
 }
-const workerSource = compileTypeScript(readFileSync(path.join(__dirname, "../tools/CardPrinter/workers/detection-worker.ts"), "utf8"));
+const workerSource = compileTypeScript(readFileSync(path.join(__dirname, "../src/tools/CardPrinter/workers/detection-worker.ts"), "utf8"));
 function makeWorker() {
   let handler;
   const messages = [];
@@ -70,7 +70,7 @@ test("removing every area produces no crops instead of rerunning detection", asy
 });
 
 test("corner edits accept perspective shapes and reject crossed or collapsed borders", async () => {
-  const { validCorners } = await importTypeScript("../tools/CardPrinter/utils/geometry.ts");
+  const { validCorners } = await importTypeScript("../src/tools/CardPrinter/utils/geometry.ts");
   assert.equal(validCorners(rectangle(5, 5, 20, 30).corners), true);
   assert.equal(validCorners([{ x: 8, y: 7 }, { x: 25, y: 5 }, { x: 23, y: 35 }, { x: 5, y: 30 }]), true);
   assert.equal(validCorners([{ x: 30, y: 30 }, { x: 25, y: 5 }, { x: 25, y: 35 }, { x: 5, y: 35 }]), false);

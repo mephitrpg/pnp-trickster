@@ -11,7 +11,7 @@ test.before(async () => {
   ({ PDFDocument, PDFDict, PDFName, rgb } = await import(`data:text/javascript;base64,${library.toString("base64")}`));
 });
 
-const workerPath = path.join(__dirname, "../tools/CardPrinter/workers/sprite-worker.ts");
+const workerPath = path.join(__dirname, "../src/tools/CardPrinter/workers/sprite-worker.ts");
 // Run the actual worker handler with the vendored pdf-lib library. Only the
 // browser image APIs are replaced; PDF encoding and parsing remain real.
 const workerSource = compileTypeScript(readFileSync(workerPath, "utf8")).replace(/^import .*\r?\n/, "\n");

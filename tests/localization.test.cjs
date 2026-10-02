@@ -17,7 +17,7 @@ test("localization uses the hash locale and route, with English fallback", async
 });
 
 test("English and Italian dictionaries contain the same messages", async () => {
-  for (const directory of ["../home/lang", "../tools/PdfBooklet/lang", "../tools/CardPrinter/lang"]) {
+  for (const directory of ["../src/home/lang", "../src/tools/PdfBooklet/lang", "../src/tools/CardPrinter/lang"]) {
     const english = (await importTypeScript(`${directory}/en.ts`)).default;
     const italian = (await importTypeScript(`${directory}/it.ts`)).default;
     assert.deepEqual(Object.keys(italian).sort(), Object.keys(english).sort(), directory);

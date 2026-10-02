@@ -4,7 +4,7 @@ const { importTypeScript } = require("./load-typescript.cjs");
 
 test("booklet transforms accept valid blank PDF pages", async () => {
   const { PDFDocument } = await import("../vendor/pdf-lib.esm.min.js");
-  const { joinPagesSideBySide, splitPagesInHalf } = await importTypeScript("../tools/PdfBooklet/operations.ts");
+  const { joinPagesSideBySide, splitPagesInHalf } = await importTypeScript("../src/tools/PdfBooklet/operations.ts");
   const source = await PDFDocument.create();
   source.addPage([200, 300]);
   source.addPage([200, 300]);
