@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { withLoading } from "../../loading-overlay.tsx";
 import type { Translator } from "../../../localization.ts";
-import { clearState, imageDpi, initialState, initializeCards, loadImage, numberItems, orderedCards, prepareImageFile, readState, releaseImage, restoreState, saveState, validImageFiles, type Back, type PrinterState, type Region, type Sprite } from "./model.ts";
+import { clearState, groupCardsByFront, imageDpi, initialState, initializeCards, loadImage, numberItems, orderedCards, prepareImageFile, readState, releaseImage, restoreState, saveState, validImageFiles, type Back, type CardScale, type PrinterState, type Region, type Sprite } from "./model.ts";
 import { createPreviewCache } from "./preview-cache.ts";
 
 const spriteWorker = import("../workers/sprite-worker-client.ts");
@@ -129,6 +129,7 @@ export function useCardPrinter(t: Translator) {
     const total = sprite.rows * sprite.columns;
     if (sprite.backIndex !== null && sprite.backIndex >= total) sprite.backIndex = total - 1;
     sprite.manualGrid = { columns: sprite.columns, rows: sprite.rows };
+    groupCardsByFront(stateRef.current);
     preview.clearSprite(id);
     await recalculate(sprite);
   }
@@ -156,6 +157,7 @@ export function useCardPrinter(t: Translator) {
   async function detect(id: string) {
     const sprite = currentSprite(id);
     if (!sprite || sprite.isGridLoading) return;
+    groupCardsByFront(stateRef.current);
     setBusy(true); sprite.isGridLoading = true; sprite.gridProgress = 0; sprite.loadingStartedAt = Date.now(); publish(false);
     try {
       const detector = await detectionWorker;
@@ -167,6 +169,7 @@ export function useCardPrinter(t: Translator) {
       sprite.detectedTiles?.forEach((tile) => releaseImage(tile.image));
       sprite.gridType = "detect"; sprite.detectedRegions = regions; sprite.detectedTiles = tiles; sprite.detectedRects = null;
       sprite.columns = tiles.length; sprite.rows = 1; sprite.backIndex = null; sprite.backFollowsLast = false;
+      groupCardsByFront(stateRef.current);
       preview.clearSprite(id);
       await initializeCards(stateRef.current, sprite, await spriteWorker);
       previous.forEach((card, index) => { if (sprite.cards[index]) Object.assign(sprite.cards[index], card); });
@@ -203,7 +206,7 @@ export function useCardPrinter(t: Translator) {
     preview.clearSprite(id);
     await recalculate(sprite);
     const availableBacks = new Set(stateRef.current.backs.map((back) => back.id));
-    previous.forEach((card, index) => { if (card && sprite.cards[index]) Object.assign(sprite.cards[index], { selected: card.selected, backSelected: card.backSelected, backId: availableBacks.has(card.backId) ? card.backId : null }); });
+    previous.forEach((card, index) => { if (card && sprite.cards[index]) Object.assign(sprite.cards[index], { selected: card.selected, backSelected: card.backSelected, backId: availableBacks.has(card.backId) ? card.backId : null, frontScale: card.frontScale, backScale: card.backScale }); });
     oldTiles?.forEach((tile) => releaseImage(tile.image));
     publish();
   }
@@ -247,6 +250,15 @@ export function useCardPrinter(t: Translator) {
       (targets.length ? targets : own ? [own] : []).forEach(({ sprite, index }) => { sprite.cards[index].backId = backId; });
     });
   }
+  function setCardScale(id: string, side: "front" | "back", scale: CardScale) {
+    mutate((s) => {
+      const targets = selectedBackTargets();
+      const own = orderedCards(s).find((entry) => entry.id === id);
+      (targets.length ? targets : own ? [own] : []).forEach(({ sprite, index }) => {
+        sprite.cards[index][side === "front" ? "frontScale" : "backScale"] = scale;
+      });
+    });
+  }
   function reorderCards(ids: string[], targetId: string) {
     mutate((s) => {
       const order = orderedCards(s).map((entry) => entry.id).filter((id) => !ids.includes(id));
@@ -264,7 +276,7 @@ export function useCardPrinter(t: Translator) {
       const bytes = await withLoading(async () => (await spriteWorker).createPdf({
         sprites: current.sprites.filter((sprite) => sprite?.id && sprite.source).map(({ id, source, columns, rows, backIndex, detectedRects, detectedTiles }) => ({ id, source, columns, rows, backIndex, detectedRects, detectedTiles: detectedTiles?.filter((tile) => tile?.source).map((tile) => tile.source) })),
         backs: current.backs.filter((back) => back?.id && typeof back.kind === "string").map(({ id, kind, spriteId, index, source }) => ({ id, kind, spriteId, index, source })),
-        selected: selected.map(({ sprite, index }) => ({ spriteId: sprite.id, columns: sprite.columns, rows: sprite.rows, index, backId: sprite.cards[index].backId })),
+        selected: selected.map(({ sprite, index }) => ({ spriteId: sprite.id, columns: sprite.columns, rows: sprite.rows, index, backId: sprite.cards[index].backId, frontScale: sprite.cards[index].frontScale, backScale: sprite.cards[index].backScale })),
         mode: current.mode, pageFormat: current.pageFormat, orientation: current.orientation, width: current.width, height: current.height
       })) as Uint8Array;
       if (typeof window.showPdfPreview === "function") await window.showPdfPreview(bytes, t("cardsPdfFilename"));
@@ -288,7 +300,7 @@ export function useCardPrinter(t: Translator) {
     state, entries, selected, selectable, allSelected, selectedTargets, unprintable, busy, preview,
     spriteName, backName, addSprites, addBacks, removeSprite, removeBack, updateGrid, updateGridType,
     updateAutomaticBack, detect, cancelDetection, saveDetectionAreas, selectCard, selectAllCards,
-    selectGrid, applyBack, setCardBack, reorderCards, download, reset,
+    selectGrid, applyBack, setCardBack, setCardScale, reorderCards, download, reset,
     editingSpriteId, setEditingSpriteId, lightbox, setLightbox,
     mutate, publish,
   };

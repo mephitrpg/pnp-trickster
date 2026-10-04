@@ -1,6 +1,8 @@
 import { readImageDpi } from "../utils/image-dpi.ts";
 
-export type Card = { selected: boolean; backSelected: boolean; isBack: boolean; backId: string | null };
+export type CardScale = "stretch" | "cover" | "contain" | "fit-width" | "fit-height";
+export type Card = { selected: boolean; backSelected: boolean; isBack: boolean; backId: string | null; frontScale: CardScale; backScale: CardScale };
+export const cardScale = (value: unknown): CardScale => value === "cover" || value === "contain" || value === "fit-width" || value === "fit-height" ? value : "stretch";
 export type Region = { corners: Array<{ x: number; y: number }> };
 export type Sprite = {
   id: string; name: string; fileName: string; source: Blob; image: HTMLImageElement;
@@ -104,6 +106,14 @@ export function orderedCards(state: PrinterState): CardEntry[] {
   natural.forEach((entry) => { if (!known.has(entry.id)) ordered.push(entry); });
   return ordered;
 }
+export function groupCardsByFront(state: PrinterState) {
+  const groups = new Map<string, string[]>();
+  orderedCards(state).forEach(({ sprite, id }) => {
+    if (!groups.has(sprite.id)) groups.set(sprite.id, []);
+    groups.get(sprite.id)!.push(id);
+  });
+  state.cardOrder = [...groups.values()].flat();
+}
 export function numberItems(state: PrinterState) {
   let grid = Math.max(0, ...state.sprites.filter((sprite) => Number.isInteger(sprite.gridNumber) && sprite.gridNumber > 0).map((sprite) => sprite.gridNumber));
   state.sprites.forEach((sprite) => { if (!Number.isInteger(sprite.gridNumber) || sprite.gridNumber < 1) sprite.gridNumber = ++grid; });
@@ -132,10 +142,11 @@ export function ensureAutomaticBack(state: PrinterState, sprite: Sprite): Back |
 }
 export async function initializeCards(state: PrinterState, sprite: Sprite, worker: typeof import("../workers/sprite-worker-client.ts")) {
   const backId = ensureAutomaticBack(state, sprite)?.id || null;
+  const previous = sprite.cards || [];
   let selected: boolean[];
   try { selected = await worker.initialSelection(sprite.source, sprite.columns, sprite.rows, sprite.backIndex, sprite.detectedRects, sprite.detectedTiles?.map((tile) => tile.source)) as boolean[]; }
   catch (error) { console.warn("Unable to determine printable sprite cards", error); selected = Array.from({ length: sprite.columns * sprite.rows }, (_, index) => index !== sprite.backIndex); }
-  sprite.cards = selected.map((value, index) => ({ selected: value, backSelected: false, isBack: index === sprite.backIndex, backId }));
+  sprite.cards = selected.map((value, index) => ({ selected: value, backSelected: false, isBack: index === sprite.backIndex, backId: state.backs.some((back) => back.id === previous[index]?.backId) ? previous[index].backId : backId, frontScale: cardScale(previous[index]?.frontScale), backScale: cardScale(previous[index]?.backScale) }));
 }
 export async function restoreState(saved: any, worker: typeof import("../workers/sprite-worker-client.ts")): Promise<PrinterState> {
   const state = initialState();
@@ -154,7 +165,7 @@ export async function restoreState(saved: any, worker: typeof import("../workers
     manualGrid: sprite.manualGrid || { columns: sprite.columns, rows: sprite.rows },
     detectedRects: Array.isArray(sprite.detectedRects) ? sprite.detectedRects : null,
     detectedTiles: sprite.gridType === "detect" ? await Promise.all((sprite.detectedTiles || []).map(async (source: Blob) => ({ source, image: await loadImage(source) }))) : null,
-    cards: Array.isArray(sprite.cards) ? sprite.cards.map((card: Card | null) => card ? { ...card, backSelected: false, backId: typeof card.backId === "string" ? card.backId : null } : null) : [],
+    cards: Array.isArray(sprite.cards) ? sprite.cards.map((card: Card | null) => card ? { ...card, backSelected: false, backId: typeof card.backId === "string" ? card.backId : null, frontScale: cardScale(card.frontScale ?? sprite.scale), backScale: cardScale(card.backScale) } : null) : [],
     image: await loadImage(sprite.source)
   })));
   state.backs = await Promise.all((Array.isArray(saved.backs) ? saved.backs : []).filter((back: any) => back && typeof back.kind === "string").map(async (back: any) => back.kind === "file" ? { ...back, image: await loadImage(back.source) } : back));
@@ -163,6 +174,11 @@ export async function restoreState(saved: any, worker: typeof import("../workers
     const sprite = state.sprites.find((entry) => entry.id === back.spriteId);
     const legacy = back.kind === "sprite-last-card" || (back.kind === "sprite" && sprite && back.name === `${sprite.name} · ultima carta`);
     if (sprite && legacy) { if (!Number.isInteger(sprite.backIndex)) sprite.backIndex = Number.isInteger(back.index) ? back.index : sprite.rows * sprite.columns - 1; delete back.index; back.kind = "sprite-grid-card"; back.cardBack = true; }
+  });
+  for (const sprite of state.sprites) sprite.cards.forEach((card, index) => {
+    if (!card || saved.sprites.find((entry: any) => entry.id === sprite.id)?.cards?.[index]?.backScale) return;
+    const back = state.backs.find((entry) => entry.id === card.backId);
+    card.backScale = cardScale(saved.sprites.find((entry: any) => entry.id === back?.spriteId)?.scale);
   });
   for (const sprite of state.sprites) {
     if (!Array.isArray(sprite.cards) || sprite.cards.length !== sprite.rows * sprite.columns || sprite.cards.some((card) => !card)) await initializeCards(state, sprite, worker);

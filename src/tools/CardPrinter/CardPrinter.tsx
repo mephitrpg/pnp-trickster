@@ -22,6 +22,18 @@ export default function CardPrinter() {
     document.addEventListener("keydown", onKeyDown);
     return () => { unlock(); document.removeEventListener("keydown", onKeyDown); };
   }, [controller.lightbox]);
+  const dropZone = <div className={`drop-zone${dragging ? " dragging" : ""}`} onDragEnter={(event) => { event.preventDefault(); setDragging(true); }}
+    onDragOver={(event) => event.preventDefault()} onDragLeave={(event) => { event.preventDefault(); setDragging(false); }}
+    onDrop={(event) => { event.preventDefault(); setDragging(false); void controller.addSprites(event.dataTransfer.files); }}>
+    <div>
+      <div className="sprite-grid">{Array.from({ length: 24 }, (_, index) => <i className="sprite-cell" key={index} />)}</div>
+      <h2>{t("dropSprites")}</h2><p>{t("imageTypes")}</p>
+      <button className="browse-button" type="button" onClick={() => fileInput.current?.click()}>{t("addSprites")}</button>
+      <p className="file-note">{controller.state.sprites.length ? t(controller.state.sprites.length === 1 ? "spriteLoaded" : "spritesLoaded", { count: controller.state.sprites.length }) : t("selectImages")}</p>
+      <input ref={fileInput} className="file-picker-input" id="sprite-file-input" type="file" accept={IMAGE_ACCEPT} multiple
+        onChange={(event) => { if (event.target.files) void controller.addSprites(event.target.files); event.target.value = ""; }} />
+    </div>
+  </div>;
   return <section className="tool-page sprites-page">
     <div className={`panel sprites-panel${controller.state.sprites.length ? " has-sprites" : ""}`}>
       <div data-workspace="" data-view={controller.state.view}>
@@ -41,20 +53,9 @@ export default function CardPrinter() {
             <aside className="how-it-works" aria-label={t("howItWorks")}>
               <h2>{t("howItWorks")}</h2><p>{t("howItWorksText")}</p>
             </aside>
-            <div className={`drop-zone${dragging ? " dragging" : ""}`} onDragEnter={(event) => { event.preventDefault(); setDragging(true); }}
-              onDragOver={(event) => event.preventDefault()} onDragLeave={(event) => { event.preventDefault(); setDragging(false); }}
-              onDrop={(event) => { event.preventDefault(); setDragging(false); void controller.addSprites(event.dataTransfer.files); }}>
-              <div>
-                <div className="sprite-grid">{Array.from({ length: 24 }, (_, index) => <i className="sprite-cell" key={index} />)}</div>
-                <h2>{t("dropSprites")}</h2><p>{t("imageTypes")}</p>
-                <button className="browse-button" type="button" onClick={() => fileInput.current?.click()}>{t("addSprites")}</button>
-                <p className="file-note">{controller.state.sprites.length ? t(controller.state.sprites.length === 1 ? "spriteLoaded" : "spritesLoaded", { count: controller.state.sprites.length }) : t("selectImages")}</p>
-                <input ref={fileInput} className="file-picker-input" id="sprite-file-input" type="file" accept={IMAGE_ACCEPT} multiple
-                  onChange={(event) => { if (event.target.files) void controller.addSprites(event.target.files); event.target.value = ""; }} />
-              </div>
-            </div>
+            {controller.state.sprites.length === 0 && dropZone}
             {controller.state.sprites.length > 0 && <div>
-              <CardFrontsArea controller={controller} />
+              <CardFrontsArea controller={controller} dropZone={dropZone} />
               <CardBacksArea controller={controller} />
               <PrintSettingsArea controller={controller} />
             </div>}

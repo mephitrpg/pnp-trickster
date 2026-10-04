@@ -1,8 +1,8 @@
 export default {
   homeEyebrow: "Print · play · repeat",
-  homeTitleFirst: "Print and Play.",
-  homeTitleEmphasis: "Easier.",
-  homeLede: "Prepare cards and game materials without losing time between sheets and settings.",
+  homeTitleFirst: "Learn the tricks of Print & Play.",
+  homeTitleEmphasis: "Ask the Trickster!",
+  homeLede: "Prepare cards and game materials learning the tricks of the trade and without losing time between sheets and settings.",
   feature1: "A4 ready",
   feature1Text: "The standard format, already set.",
   feature2: "Do it yourself",

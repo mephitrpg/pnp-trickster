@@ -19,7 +19,7 @@ function SizeEstimateDialog({ sprite, onClose }: { sprite: Sprite; onClose: () =
   </dialog>;
 }
 
-export function SpriteEditor({ sprite, controller }: { sprite: Sprite; controller: CardPrinterController }) {
+export function CardFront({ sprite, controller }: { sprite: Sprite; controller: CardPrinterController }) {
   const { t } = useLocalization();
   const [estimateOpen, setEstimateOpen] = useState(false);
   const [confirmed, setConfirmed] = useState("");
@@ -69,7 +69,7 @@ export function SpriteEditor({ sprite, controller }: { sprite: Sprite; controlle
         {showEstimate && (sprite.dpi ? <small className="card-size-estimate"><span className="card-size-estimate-title">{t("cardSize")}</span><strong>{width.toFixed(1)} × {height.toFixed(1)} mm</strong><small>{Math.round((sprite.dpi.x + sprite.dpi.y) / 2)} {t("dpi")}</small></small>
           : <button className="action-button secondary show-card-size-estimate" type="button" onClick={() => setEstimateOpen(true)}>{t("viewCardSizeEstimation")}</button>)}
         <label>{t("automaticBack")}
-          <select aria-label={t("automaticBack")} disabled={sprite.isGridLoading} value={sprite.backIndex === null ? "" : String(sprite.backIndex)} onChange={(event) => void controller.updateAutomaticBack(sprite.id, event.target.value === "" ? null : Number(event.target.value))}>
+          <select data-back-index aria-label={t("automaticBack")} disabled={sprite.isGridLoading} value={sprite.backIndex === null ? "" : String(sprite.backIndex)} onChange={(event) => void controller.updateAutomaticBack(sprite.id, event.target.value === "" ? null : Number(event.target.value))}>
             <option value="">{t("none")}</option>{Array.from({ length: total }, (_, index) => <option value={index} key={index}>{t("card")} {index + 1}</option>)}
           </select>
         </label>

@@ -1,5 +1,5 @@
-import homeEn from "./home/lang/en.ts";
-import homeIt from "./home/lang/it.ts";
+import homeEn from "./pages/Home/lang/en.ts";
+import homeIt from "./pages/Home/lang/it.ts";
 import bookletEn from "./tools/PdfBooklet/lang/en.ts";
 import bookletIt from "./tools/PdfBooklet/lang/it.ts";
 import cardsEn from "./tools/CardPrinter/lang/en.ts";
@@ -15,7 +15,7 @@ export const routes: Route[] = ["home", "pdf-booklet", "card-printer"];
 
 const shared: Record<"en" | "it", Record<string, string>> = {
   en: {
-    home: "Home", tools: "Tools", ready: "Ready to create",
+    home: "Home", tools: "Tools", tricks: "Tricks", ready: "Ready to create",
     reset: "Reset tool", resetConfirm: "Delete the data saved for this tool?",
     sidebarTools: "Tools", sidebarLanguage: "Language",
     expandSidebar: "Expand sidebar", collapseSidebar: "Collapse sidebar",
@@ -27,12 +27,12 @@ const shared: Record<"en" | "it", Record<string, string>> = {
     pdfPreviewPage: "Page", pdfPreviewError: "The PDF preview could not be created. Please try again."
   },
   it: {
-    home: "Home", tools: "Strumenti", ready: "Pronto a creare",
+    home: "Home", tools: "Strumenti", tricks: "Trucchi", ready: "Pronto a creare",
     reset: "Reinizializza strumento", resetConfirm: "Vuoi eliminare i dati salvati per questo strumento?",
     sidebarTools: "Strumenti", sidebarLanguage: "Lingua",
     expandSidebar: "Espandi barra laterale", collapseSidebar: "Comprimi barra laterale",
     processing: "Elaborazione in corso…", pdfBooklet: "PDF Booklet",
-    cardPrinter: "Stampa carte", brandHome: "Pagina iniziale di Trickster",
+    cardPrinter: "Stampa carte", brandHome: "Pagina iniziale di PnPTrickster",
     previewPdf: "Anteprima PDF", pdfPreviewLabel: "Anteprima PDF",
     pdfPreviewTitle: "Il tuo foglio stampabile", pdfPreviewClose: "Chiudi anteprima",
     pdfPreviewPrint: "Stampa", pdfPreviewDownload: "Scarica PDF",

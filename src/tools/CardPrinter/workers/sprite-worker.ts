@@ -12,6 +12,19 @@ const tileCanvas = (bitmap, columns, rows, index, detectedRects?) => {
   canvas.getContext("2d").drawImage(bitmap, bounds.x, bounds.y, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height);
   return canvas;
 };
+const fitTile = (tile, scale, aspect) => {
+  if (scale === "stretch") return tile;
+  const maxSide = Math.min(2400, Math.max(tile.width, tile.height));
+  const width = Math.max(1, Math.round(aspect >= 1 ? maxSide : maxSide * aspect));
+  const height = Math.max(1, Math.round(aspect >= 1 ? maxSide / aspect : maxSide));
+  const canvas = new OffscreenCanvas(width, height), context = canvas.getContext("2d");
+  context.fillStyle = "#fff";
+  context.fillRect(0, 0, width, height);
+  const factor = scale === "fit-width" ? width / tile.width : scale === "fit-height" ? height / tile.height : scale === "cover" ? Math.max(width / tile.width, height / tile.height) : Math.min(width / tile.width, height / tile.height);
+  const drawWidth = tile.width * factor, drawHeight = tile.height * factor;
+  context.drawImage(tile, (width - drawWidth) / 2, (height - drawHeight) / 2, drawWidth, drawHeight);
+  return canvas;
+};
 const isMonochrome = (canvas) => {
   const { data } = canvas.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, canvas.width, canvas.height);
   let count = 0, red = 0, green = 0, blue = 0;
@@ -102,7 +115,8 @@ const handlers = {
           const item = selected[start + slot], image = imageFor(item, face);
           const { column, row } = placements[slot], x = originX + column * cardWidth, y = originY - (row + 1) * cardHeight;
           if (image) {
-            const png = await pdf.embedPng(await pngBytes(tileCanvas(image.bitmap, image.columns, image.rows, image.index, image.detectedRects)));
+            const tile = tileCanvas(image.bitmap, image.columns, image.rows, image.index, image.detectedRects);
+            const png = await pdf.embedPng(await pngBytes(fitTile(tile, face === "front" ? item.frontScale : item.backScale, cardWidth / cardHeight)));
             page.drawImage(png, { x, y, width: cardWidth, height: cardHeight });
           } else {
             page.drawRectangle({ x, y, width: cardWidth, height: cardHeight, color: rgb(1, 1, 1) });

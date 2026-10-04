@@ -1,8 +1,8 @@
 export default {
   homeEyebrow: "Stampa · gioca · ripeti",
-  homeTitleFirst: "Stampa e gioca.",
-  homeTitleEmphasis: "Più facilmente.",
-  homeLede: "Prepara carte e materiali di gioco senza perdere tempo tra fogli e impostazioni.",
+  homeTitleFirst: "Impara i trucchi del Print & Play.",
+  homeTitleEmphasis: "Chiedi al Maestro dei Trucchi!",
+  homeLede: "Prepara carte e materiali di gioco imparando i trucchi del mestiere e senza perdere tempo tra fogli e impostazioni.",
   feature1: "Pronto per A4",
   feature1Text: "Il formato standard, già impostato.",
   feature2: "Fai da te",

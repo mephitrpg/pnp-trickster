@@ -23,9 +23,17 @@ export function DetectionEditor({ sprite, onSave, onClose }: { sprite: Sprite; o
     const node = dialog.current!;
     node.showModal();
     const unlock = lockPageScroll(node);
-    const observer = new ResizeObserver(() => setViewportSize({ width: viewport.current?.clientWidth || width, height: viewport.current?.clientHeight || height }));
-    observer.observe(viewport.current!);
-    setViewportSize({ width: viewport.current?.clientWidth || width, height: viewport.current?.clientHeight || height });
+    const measureViewport = () => {
+      const bounds = viewport.current?.getBoundingClientRect();
+      if (!bounds) return;
+      // Scrollbars change clientWidth/clientHeight, but not the outer size. Leave
+      // one pixel for subpixel rounding when the image fits the viewport.
+      const next = { width: Math.max(0, bounds.width - 1), height: Math.max(0, bounds.height - 1) };
+      setViewportSize((current) => current.width === next.width && current.height === next.height ? current : next);
+    };
+    const observer = new ResizeObserver(measureViewport);
+    observer.observe(viewport.current!, { box: "border-box" });
+    measureViewport();
     return () => { observer.disconnect(); unlock(); node.close(); };
   }, []);
   const scale = width / (svg.current?.getBoundingClientRect().width || width);

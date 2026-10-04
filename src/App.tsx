@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import Home from "./home/Home";
+import Home from "./pages/Home/Home";
 import { LocalizationProvider, useLocalization } from "./LocalizationProvider";
 import { locales, normalizeLocation, setActiveLocalization, type Locale, type Location, type Route } from "./localization";
 
@@ -58,7 +58,7 @@ function Shell({ location, onNavigate }: { location: Location; onNavigate: (rout
             aria-expanded={!collapsed}><span aria-hidden="true">☰</span></button>
         </div>
       </div>
-      <p className="sidebar-label">{t("tools")}</p>
+      <p className="sidebar-label">{t("tricks")}</p>
       <nav className="tool-nav" aria-label={t("sidebarTools")}>
         <button type="button" className={`tool-link${route === "home" ? " is-active" : ""}`}
           onClick={() => onNavigate("home")}><span className="tool-icon">⌂</span><span>{t("home")}</span></button>
