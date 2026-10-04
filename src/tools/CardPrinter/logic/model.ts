@@ -1,8 +1,8 @@
 import { readImageDpi } from "../utils/image-dpi.ts";
 
-export type CardScale = "stretch" | "cover" | "contain" | "fit-width" | "fit-height";
+export type CardScale = "stretch" | "cover" | "contain";
 export type Card = { selected: boolean; backSelected: boolean; isBack: boolean; backId: string | null; frontScale: CardScale; backScale: CardScale };
-export const cardScale = (value: unknown): CardScale => value === "cover" || value === "contain" || value === "fit-width" || value === "fit-height" ? value : "stretch";
+export const cardScale = (value: unknown): CardScale => value === "cover" || value === "contain" ? value : "stretch";
 export type Region = { corners: Array<{ x: number; y: number }> };
 export type Sprite = {
   id: string; name: string; fileName: string; source: Blob; image: HTMLImageElement;

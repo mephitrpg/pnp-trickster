@@ -41,7 +41,7 @@ export function CardPreviewMarkup({ sprite, index, id, card, backs, selectedBack
           <option value="front">{t("front")}</option><option value="back">{t("back")}</option>
         </select>
         <select className="card-scale-select" aria-label={`${t("front")} ${t("scale")}`} value={frontScale} disabled={!printable} onChange={(event) => onFrontScale(event.target.value as CardScale)}>
-          <option value="stretch">Stretch</option><option value="cover">Cover</option><option value="contain">Contain</option><option value="fit-width">Fit width</option><option value="fit-height">Fit height</option>
+          <option value="stretch">Stretch</option><option value="cover">Cover</option><option value="contain">Contain</option>
         </select>
       </figure>
       <figure>
@@ -51,7 +51,7 @@ export function CardPreviewMarkup({ sprite, index, id, card, backs, selectedBack
           {backs.map((back) => <option value={back.id} key={back.id}>{backDisplayName(back)}</option>)}
         </select>
         <select className="card-scale-select" aria-label={`${t("back")} ${t("scale")}`} value={backScale} disabled={!backUrl || !printable} onChange={(event) => onBackScale(event.target.value as CardScale)}>
-          <option value="stretch">Stretch</option><option value="cover">Cover</option><option value="contain">Contain</option><option value="fit-width">Fit width</option><option value="fit-height">Fit height</option>
+          <option value="stretch">Stretch</option><option value="cover">Cover</option><option value="contain">Contain</option>
         </select>
       </figure>
     </div>

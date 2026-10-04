@@ -20,7 +20,7 @@ const fitTile = (tile, scale, aspect) => {
   const canvas = new OffscreenCanvas(width, height), context = canvas.getContext("2d");
   context.fillStyle = "#fff";
   context.fillRect(0, 0, width, height);
-  const factor = scale === "fit-width" ? width / tile.width : scale === "fit-height" ? height / tile.height : scale === "cover" ? Math.max(width / tile.width, height / tile.height) : Math.min(width / tile.width, height / tile.height);
+  const factor = scale === "cover" ? Math.max(width / tile.width, height / tile.height) : Math.min(width / tile.width, height / tile.height);
   const drawWidth = tile.width * factor, drawHeight = tile.height * factor;
   context.drawImage(tile, (width - drawWidth) / 2, (height - drawHeight) / 2, drawWidth, drawHeight);
   return canvas;

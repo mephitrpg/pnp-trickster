@@ -105,8 +105,6 @@
 .card-face-image > img { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; object-fit: fill; transform: translate(-50%, -50%); }
 .card-face-image[data-scale="cover"] > img { object-fit: cover; }
 .card-face-image[data-scale="contain"] > img { object-fit: contain; }
-.card-face-image[data-scale="fit-width"] > img { width: 100%; height: auto; }
-.card-face-image[data-scale="fit-height"] > img { width: auto; height: 100%; }
 .card-preview-loading { position: relative; display: block; min-height: 0; cursor: wait; }
 .card-preview-loading > :not(.card-loading-indicator) { opacity: .32; }
 .card-preview-loading .card-selection-bar { min-height: 30px; }
