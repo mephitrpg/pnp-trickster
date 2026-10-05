@@ -34,6 +34,7 @@ function Workspace({ route, locale }: { route: Route; locale: Locale }) {
 
 function Shell({ location, onNavigate }: { location: Location; onNavigate: (route: Route, locale?: Locale) => void }) {
   const { locale, route, language, t } = useLocalization();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(() => {
     try { return window.localStorage.getItem(SIDEBAR_STATE_KEY) === "true"; }
     catch { return false; }
@@ -43,11 +44,15 @@ function Shell({ location, onNavigate }: { location: Location; onNavigate: (rout
     setCollapsed(next);
     try { window.localStorage.setItem(SIDEBAR_STATE_KEY, String(next)); } catch { /* Browser storage may be unavailable. */ }
   }
+  function navigateFromMenu(nextRoute: Route) {
+    setMobileMenuOpen(false);
+    onNavigate(nextRoute);
+  }
   return <div className={`shell${collapsed ? " sidebar-is-collapsed" : ""}${route === "board-generator" ? " board-generator-shell" : ""}`}>
     <aside className="sidebar" aria-label={t("sidebarTools")}>
       <div className="sidebar-header">
         <a className="brand" href={`#${locale}/home`} aria-label={t("brandHome")}
-          onClick={() => onNavigate("home")}>
+          onClick={() => navigateFromMenu("home")}>
           <span className="brand-mark"><img src={asset("trickster-icon.png")} alt="" /></span>
           <span>PnP Trickster</span>
         </a>
@@ -58,22 +63,27 @@ function Shell({ location, onNavigate }: { location: Location; onNavigate: (rout
             <button type="button" className={language === "en" ? "is-active" : ""}
               aria-pressed={language === "en"} onClick={() => onNavigate(route, "en-GB")}>EN</button>
           </div>
-          <button className="sidebar-toggle" type="button" onClick={toggleSidebar}
+          <button className="sidebar-toggle desktop-sidebar-toggle" type="button" onClick={toggleSidebar}
             aria-label={t(collapsed ? "expandSidebar" : "collapseSidebar")}
-            aria-expanded={!collapsed}><span aria-hidden="true">☰</span></button>
+            aria-expanded={!collapsed}><span aria-hidden="true">{collapsed ? ">" : "<"}</span></button>
+          <button className="sidebar-toggle mobile-menu-toggle" type="button"
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            aria-label={t(mobileMenuOpen ? "closeMenu" : "openMenu")}
+            aria-controls="mobile-tool-menu" aria-expanded={mobileMenuOpen}><span aria-hidden="true">☰</span></button>
         </div>
       </div>
       <p className="sidebar-label">{t("tricks")}</p>
-      <nav className="tool-nav" aria-label={t("sidebarTools")}>
+      <nav id="mobile-tool-menu" className={`tool-nav${mobileMenuOpen ? " is-open" : ""}`} aria-label={t("sidebarTools")}>
+        <p className="mobile-menu-label">{t("tricks")}</p>
         <button type="button" className={`tool-link${route === "home" ? " is-active" : ""}`}
           aria-label={t("home")} data-tooltip={t("home")}
-          onClick={() => onNavigate("home")}><span className="tool-icon">⌂</span><span>{t("home")}</span></button>
+          onClick={() => navigateFromMenu("home")}><span className="tool-icon">⌂</span><span>{t("home")}</span></button>
         <button type="button" className={`tool-link${route === "card-printer" ? " is-active" : ""}`}
           aria-label={t("cardPrinter")} data-tooltip={t("cardPrinter")}
-          onClick={() => onNavigate("card-printer")}><span className="tool-icon"><CardIcon /></span><span>{t("cardPrinter")}</span></button>
+          onClick={() => navigateFromMenu("card-printer")}><span className="tool-icon"><CardIcon /></span><span>{t("cardPrinter")}</span></button>
         <button type="button" className={`tool-link${route === "board-generator" ? " is-active" : ""}`}
           aria-label={t("boardGenerator")} data-tooltip={t("boardGenerator")}
-          onClick={() => onNavigate("board-generator")}><span className="tool-icon" aria-hidden="true">▦</span><span>{t("boardGenerator")}</span></button>
+          onClick={() => navigateFromMenu("board-generator")}><span className="tool-icon" aria-hidden="true">▦</span><span>{t("boardGenerator")}</span></button>
       </nav>
       <div className="sidebar-footer"><span className="status-dot" /> {t("ready")}</div>
     </aside>
