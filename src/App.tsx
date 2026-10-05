@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import Home from "./pages/Home/Home";
+import BoardGenerator from "./tools/BoardGenerator/BoardGenerator";
 import { LocalizationProvider, useLocalization } from "./LocalizationProvider";
 import { locales, normalizeLocation, setActiveLocalization, type Locale, type Location, type Route } from "./localization";
 
@@ -21,10 +22,14 @@ function CardIcon() {
 
 function Workspace({ route, locale }: { route: Route; locale: Locale }) {
   const { t } = useLocalization();
-  return <Suspense fallback={<div className="tool-page" role="status">{t("processing")}</div>}>
-    {route === "pdf-booklet" ? <PdfBooklet />
-      : route === "card-printer" ? <CardPrinter key={locale} /> : <Home />}
-  </Suspense>;
+  const [boardLoaded, setBoardLoaded] = useState(route === "board-generator");
+  useEffect(() => { if (route === "board-generator") setBoardLoaded(true); }, [route]);
+  return <>
+    <Suspense fallback={<div className="tool-page" role="status">{t("processing")}</div>}>
+      {route === "pdf-booklet" ? <PdfBooklet /> : route === "card-printer" ? <CardPrinter key={locale} /> : route === "home" ? <Home /> : null}
+    </Suspense>
+    {boardLoaded && <div className="board-generator-page" hidden={route !== "board-generator"}><BoardGenerator /></div>}
+  </>;
 }
 
 function Shell({ location, onNavigate }: { location: Location; onNavigate: (route: Route, locale?: Locale) => void }) {
@@ -38,7 +43,7 @@ function Shell({ location, onNavigate }: { location: Location; onNavigate: (rout
     setCollapsed(next);
     try { window.localStorage.setItem(SIDEBAR_STATE_KEY, String(next)); } catch { /* Browser storage may be unavailable. */ }
   }
-  return <div className={`shell${collapsed ? " sidebar-is-collapsed" : ""}`}>
+  return <div className={`shell${collapsed ? " sidebar-is-collapsed" : ""}${route === "board-generator" ? " board-generator-shell" : ""}`}>
     <aside className="sidebar" aria-label={t("sidebarTools")}>
       <div className="sidebar-header">
         <a className="brand" href={`#${locale}/home`} aria-label={t("brandHome")}
@@ -61,9 +66,14 @@ function Shell({ location, onNavigate }: { location: Location; onNavigate: (rout
       <p className="sidebar-label">{t("tricks")}</p>
       <nav className="tool-nav" aria-label={t("sidebarTools")}>
         <button type="button" className={`tool-link${route === "home" ? " is-active" : ""}`}
+          aria-label={t("home")} data-tooltip={t("home")}
           onClick={() => onNavigate("home")}><span className="tool-icon">⌂</span><span>{t("home")}</span></button>
         <button type="button" className={`tool-link${route === "card-printer" ? " is-active" : ""}`}
+          aria-label={t("cardPrinter")} data-tooltip={t("cardPrinter")}
           onClick={() => onNavigate("card-printer")}><span className="tool-icon"><CardIcon /></span><span>{t("cardPrinter")}</span></button>
+        <button type="button" className={`tool-link${route === "board-generator" ? " is-active" : ""}`}
+          aria-label={t("boardGenerator")} data-tooltip={t("boardGenerator")}
+          onClick={() => onNavigate("board-generator")}><span className="tool-icon" aria-hidden="true">▦</span><span>{t("boardGenerator")}</span></button>
       </nav>
       <div className="sidebar-footer"><span className="status-dot" /> {t("ready")}</div>
     </aside>

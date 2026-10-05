@@ -3,7 +3,7 @@ export default {
   howItWorks: "Come funziona",
   howItWorksText: "Aggiungi le immagini dei fronti, configura le griglie e i retro, quindi seleziona le carte da includere nel PDF stampabile.",
   spritesEyebrow: "Materiali per il tavolo",
-  spritesLede: "Trasforma immagini multiple scansionate o disposte in una griglia (sprite) in un foglio di carte pronto da stampare.",
+  spritesLede: "Trasforma immagini di singole carte, scansioni o griglie di carte in fogli pronti da stampare.",
   dropSprites: "Trascina qui le immagini",
   imageTypes: "Immagini PNG, JPG, WebP, TIFF, GIF, BMP o AVIF",
   addSprites: "Aggiungi file",

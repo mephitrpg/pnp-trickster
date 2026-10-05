@@ -168,3 +168,29 @@
 
 .apply-back { width: 100%; margin: 0; padding: 8px 10px; font-size: 11px; }
 .apply-back:disabled { cursor: not-allowed; }
+
+/* Keep scrolling inside the card printer instead of extending the page. */
+html:has(.sprites-page) { height: 100%; overflow: hidden; }
+body:has(.sprites-page) { height: 100dvh; min-height: 0; overflow: hidden; }
+.shell:has(.sprites-page) { height: 100dvh; min-height: 0; overflow: hidden; }
+.workspace:has(.sprites-page) { min-height: 0; }
+
+/* Match the board generator's column spacing. */
+.sprites-page .sprites-panel { padding: 0; }
+.sprites-panel [data-workspace] { margin-top: 0; }
+.sprites-panel .workspace-columns { gap: 0; }
+.sprites-panel .workflow-column { padding: 28px clamp(18px, 4vw, 38px) 48px; }
+.sprites-panel .workflow-column + .workflow-column { margin-top: 0; padding: clamp(20px, 4vw, 50px); }
+.sprites-panel [data-workspace][data-view="two-columns"] .workflow-column { padding-right: clamp(18px, 4vw, 38px); }
+.sprites-panel [data-workspace][data-view="two-columns"] .workflow-column + .workflow-column { padding-right: clamp(20px, 4vw, 50px); }
+
+@media (min-width: 1001px) {
+  .sprites-page .sprites-panel:has([data-view="two-columns"]) { overflow-y: hidden; }
+  .sprites-panel [data-workspace][data-view="two-columns"] .workspace-columns { height: calc(100dvh - 2px); }
+}
+
+@media (max-width: 680px) {
+  .shell:has(.sprites-page) { grid-template-rows: auto minmax(0, 1fr); }
+  .workspace:has(.sprites-page) { overflow-y: auto; }
+  .sprites-page .sprites-panel { height: auto; min-height: 0; overflow: visible; }
+}

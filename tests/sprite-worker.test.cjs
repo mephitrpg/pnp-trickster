@@ -29,8 +29,9 @@ function makeWorker() {
     }
     getContext() {
       return {
+        fillRect() {},
         drawImage(bitmap, x, y, width, height) {
-          drawCalls.push({ source: bitmap.name, x, y, width, height });
+          if (bitmap.name) drawCalls.push({ source: bitmap.name, x, y, width, height });
         }
       };
     }

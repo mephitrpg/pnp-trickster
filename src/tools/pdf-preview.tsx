@@ -41,15 +41,17 @@ import { renderToStaticMarkup } from "react-dom/server";
     const modal = document.createElement("div");
     modal.className = "pdf-preview-modal";
     modal.innerHTML = renderToStaticMarkup(<div className="pdf-preview-dialog" role="dialog" aria-modal="true" aria-label={text.label}>
-      <header><div><p>{text.label}</p><h2>{text.title}</h2></div><button className="pdf-preview-close" type="button" aria-label={text.close}>×</button></header>
+      <header>
+        <div className="pdf-preview-heading"><p>{text.label}</p><h2>{text.title}</h2></div>
+        <div className="pdf-preview-actions">
+          <button className="action-button secondary" type="button" data-print-preview="">{text.print}</button>
+          <button className="action-button" type="button" data-download-preview="">{text.download}</button>
+        </div>
+        <button className="pdf-preview-close" type="button" aria-label={text.close}>×</button>
+      </header>
       <div className="pdf-preview-pages" data-pdf-pages="" />
-      <footer>
-        <button className="action-button secondary" type="button" data-close-preview="">{text.close}</button>
-        <button className="action-button secondary" type="button" data-print-preview="">{text.print}</button>
-        <button className="action-button" type="button" data-download-preview="">{text.download}</button>
-      </footer>
     </div>);
-    modal.addEventListener("click", (event) => { if (event.target === modal || (event.target as Element).closest(".pdf-preview-close, [data-close-preview]")) closePreview(modal); });
+    modal.addEventListener("click", (event) => { if (event.target === modal || (event.target as Element).closest(".pdf-preview-close")) closePreview(modal); });
     document.body.append(modal);
     try {
       await withLoading(async () => {

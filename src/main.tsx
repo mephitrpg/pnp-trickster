@@ -5,6 +5,7 @@ import "./styles.css";
 import "./pages/Home/styles.css";
 import "./tools/PdfBooklet/styles.css";
 import "./tools/CardPrinter/styles.css";
+import "./tools/BoardGenerator/styles.css";
 import "./tools/pdf-preview.css";
 import "./tools/pdf-preview.tsx";
 

@@ -3,7 +3,7 @@ export default {
   howItWorks: "How it works",
   howItWorksText: "Add card-front images, configure their grids and backs, then select the cards to include in the printable PDF.",
   spritesEyebrow: "Tabletop assets",
-  spritesLede: "Transform multiple scanned or arranged images into a printable card sheet.",
+  spritesLede: "Turn individual card images, scans, or card grids into print-ready sheets.",
   dropSprites: "Drop sprite images here",
   imageTypes: "PNG, JPG, WebP, TIFF, GIF, BMP, or AVIF images",
   addSprites: "Add files",

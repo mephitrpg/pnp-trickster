@@ -3,6 +3,9 @@ import type { Translator } from "./localization";
 declare global {
   interface Window {
     tr: Translator;
+    boardGeneratorTranslate: Translator;
+    boardGeneratorSetStatus: (key: string, values?: Record<string, string | number>) => void;
+    boardGeneratorRefreshStatus?: () => void;
     UTIF: {
       decode: (bytes: ArrayBuffer) => Array<{ width: number; height: number }>;
       decodeImage: (bytes: ArrayBuffer, page: object) => void;

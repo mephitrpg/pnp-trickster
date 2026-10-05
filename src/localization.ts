@@ -4,14 +4,16 @@ import bookletEn from "./tools/PdfBooklet/lang/en.ts";
 import bookletIt from "./tools/PdfBooklet/lang/it.ts";
 import cardsEn from "./tools/CardPrinter/lang/en.ts";
 import cardsIt from "./tools/CardPrinter/lang/it.ts";
+import boardEn from "./tools/BoardGenerator/lang/en.ts";
+import boardIt from "./tools/BoardGenerator/lang/it.ts";
 
 export const locales = { "en-GB": "en", "it-IT": "it" } as const;
 export type Locale = keyof typeof locales;
-export type Route = "home" | "pdf-booklet" | "card-printer";
+export type Route = "home" | "pdf-booklet" | "card-printer" | "board-generator";
 export type Location = { locale: Locale; route: Route };
 export type TranslationValues = Record<string, string | number>;
 export type Translator = (key: string, values?: TranslationValues) => string;
-export const routes: Route[] = ["home", "pdf-booklet", "card-printer"];
+export const routes: Route[] = ["home", "pdf-booklet", "card-printer", "board-generator"];
 
 const shared: Record<"en" | "it", Record<string, string>> = {
   en: {
@@ -20,7 +22,7 @@ const shared: Record<"en" | "it", Record<string, string>> = {
     sidebarTools: "Tools", sidebarLanguage: "Language",
     expandSidebar: "Expand sidebar", collapseSidebar: "Collapse sidebar",
     processing: "Processing…", pdfBooklet: "PDF Booklet",
-    cardPrinter: "Card Printer", brandHome: "Trickster home",
+    cardPrinter: "Card Printer", boardGenerator: "Board Generator", brandHome: "Trickster home",
     previewPdf: "Preview PDF", pdfPreviewLabel: "PDF preview",
     pdfPreviewTitle: "Your printable sheet", pdfPreviewClose: "Close preview",
     pdfPreviewPrint: "Print", pdfPreviewDownload: "Download PDF",
@@ -32,7 +34,7 @@ const shared: Record<"en" | "it", Record<string, string>> = {
     sidebarTools: "Strumenti", sidebarLanguage: "Lingua",
     expandSidebar: "Espandi barra laterale", collapseSidebar: "Comprimi barra laterale",
     processing: "Elaborazione in corso…", pdfBooklet: "PDF Booklet",
-    cardPrinter: "Stampa carte", brandHome: "Pagina iniziale di PnPTrickster",
+    cardPrinter: "Stampa carte", boardGenerator: "Generatore di plance", brandHome: "Pagina iniziale di PnPTrickster",
     previewPdf: "Anteprima PDF", pdfPreviewLabel: "Anteprima PDF",
     pdfPreviewTitle: "Il tuo foglio stampabile", pdfPreviewClose: "Chiudi anteprima",
     pdfPreviewPrint: "Stampa", pdfPreviewDownload: "Scarica PDF",
@@ -43,7 +45,8 @@ const shared: Record<"en" | "it", Record<string, string>> = {
 const dictionaries: Record<Route, Record<"en" | "it", Record<string, string>>> = {
   home: { en: homeEn, it: homeIt },
   "pdf-booklet": { en: bookletEn, it: bookletIt },
-  "card-printer": { en: cardsEn, it: cardsIt }
+  "card-printer": { en: cardsEn, it: cardsIt },
+  "board-generator": { en: boardEn, it: boardIt }
 };
 
 export function normalizeLocation(hash: string): Location {

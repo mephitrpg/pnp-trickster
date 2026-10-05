@@ -1,6 +1,8 @@
 # PnP Trickster
 
-A browser based React app for preparing print and play PDFs and card sheets. Files and saved work stay in the browser's IndexedDB.
+A browser based React app for preparing print and play PDFs, card sheets, and game boards. Files and saved work stay in browser storage.
+
+The board generator is available at `#en-GB/board-generator` or `#it-IT/board-generator` inside the single page app. Its React markup, JavaScript, CSS, translations, and jsPDF asset live in `src/tools/board/`. Wood textures remain in `public/board-generator/images/`, and the PDF preview uses `public/vendor/pdfjs/`.
 
 ## Development
 

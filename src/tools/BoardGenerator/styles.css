@@ -1,0 +1,42 @@
+@import "./legacy.css";
+
+.board-generator-shell .workspace { padding: 0; overflow: visible; }
+.board-generator-page[hidden] { display: none; }
+.board-generator-page, .board-generator { min-height: 100vh; }
+.board-generator #main-grid { min-height: 100vh; }
+
+@media (min-width: 1001px) {
+  .board-generator #main-grid[data-view="two-columns"] {
+    height: 100dvh;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .board-generator #main-grid[data-view="two-columns"] > .main-controls,
+  .board-generator #main-grid[data-view="two-columns"] > .board-preview {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: #7468db rgba(7,10,23,.42);
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+  }
+
+  .board-generator #main-grid[data-view="two-columns"] > .board-preview {
+    justify-content: safe center;
+    align-items: safe center;
+  }
+
+  .board-generator #main-grid[data-view="two-columns"] > .main-controls::-webkit-scrollbar,
+  .board-generator #main-grid[data-view="two-columns"] > .board-preview::-webkit-scrollbar { width: 10px; }
+  .board-generator #main-grid[data-view="two-columns"] > .main-controls::-webkit-scrollbar-track,
+  .board-generator #main-grid[data-view="two-columns"] > .board-preview::-webkit-scrollbar-track { border-radius: 999px; background: rgba(7,10,23,.42); }
+  .board-generator #main-grid[data-view="two-columns"] > .main-controls::-webkit-scrollbar-thumb,
+  .board-generator #main-grid[data-view="two-columns"] > .board-preview::-webkit-scrollbar-thumb { border: 2px solid rgba(7,10,23,.42); border-radius: 999px; background: linear-gradient(#958afa, #665bd0); }
+  .board-generator #main-grid[data-view="two-columns"] > .main-controls::-webkit-scrollbar-thumb:hover,
+  .board-generator #main-grid[data-view="two-columns"] > .board-preview::-webkit-scrollbar-thumb:hover { background: linear-gradient(#b6aeff, #786de9); }
+}
+
+@media (max-width: 680px) {
+  .board-generator-page, .board-generator, .board-generator #main-grid { min-height: 0; }
+}
